@@ -16,4 +16,10 @@
         layout="@layout/network_error"
         android:id="@+id/networkError"
         />
+
+    <include
+        layout="@layout/empty_list"
+        android:id="@+id/emptyList"
+        />
+
 </RelativeLayout>

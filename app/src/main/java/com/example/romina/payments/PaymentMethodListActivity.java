@@ -2,7 +2,6 @@ package com.example.romina.payments;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Layout;
 import android.view.View;
 import android.widget.ListView;
 
@@ -20,6 +19,7 @@ public class PaymentMethodListActivity extends AppCompatActivity {
     private PaymentMethodAdapter mAdapter;
     private ListView mListView;
     private View mNetworkError;
+    private View mEmptyList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +27,10 @@ public class PaymentMethodListActivity extends AppCompatActivity {
         setContentView(R.layout.payment_method_list);
         mListView = (ListView)findViewById(R.id.listView);
         mNetworkError = findViewById(R.id.networkError);
+        mEmptyList = findViewById(R.id.emptyList);
+        mNetworkError.setVisibility(View.GONE);
+        mEmptyList.setVisibility(View.GONE);
+
         if (savedInstanceState != null) {
             List<PaymentMethod> paymentMethods = savedInstanceState.getParcelableArrayList(PAYMENT_METHODS);
             if (paymentMethods != null) {
@@ -37,7 +41,6 @@ public class PaymentMethodListActivity extends AppCompatActivity {
         } else {
             loadPaymentMethods();
         }
-        mNetworkError.setVisibility(View.GONE);
     }
 
     public void loadPaymentMethods(){
@@ -49,6 +52,9 @@ public class PaymentMethodListActivity extends AppCompatActivity {
         service.getPaymentMethods(baseUrl, uri, publicKey, new Callback<List<PaymentMethod>>() {
             @Override
             public void success(List<PaymentMethod> paymentMethods, Response response) {
+                if (paymentMethods.isEmpty()) {
+                    mEmptyList.setVisibility(View.VISIBLE);
+                }
                 updateListView(paymentMethods);
             }
 
