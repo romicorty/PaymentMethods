@@ -2,6 +2,8 @@ package com.example.romina.payments;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Layout;
+import android.view.View;
 import android.widget.ListView;
 
 import com.example.romina.payments.model.PaymentMethod;
@@ -17,12 +19,14 @@ public class PaymentMethodListActivity extends AppCompatActivity {
     private static final String PAYMENT_METHODS = "paymentMethods";
     private PaymentMethodAdapter mAdapter;
     private ListView mListView;
+    private View mNetworkError;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.payment_method_list);
         mListView = (ListView)findViewById(R.id.listView);
+        mNetworkError = findViewById(R.id.networkError);
         if (savedInstanceState != null) {
             List<PaymentMethod> paymentMethods = savedInstanceState.getParcelableArrayList(PAYMENT_METHODS);
             if (paymentMethods != null) {
@@ -33,6 +37,7 @@ public class PaymentMethodListActivity extends AppCompatActivity {
         } else {
             loadPaymentMethods();
         }
+        mNetworkError.setVisibility(View.GONE);
     }
 
     public void loadPaymentMethods(){
@@ -49,7 +54,7 @@ public class PaymentMethodListActivity extends AppCompatActivity {
 
             @Override
             public void failure(RetrofitError error) {
-                //TODO: Agregar pantalla de error
+                mNetworkError.setVisibility(View.VISIBLE);
             }
         });
     }

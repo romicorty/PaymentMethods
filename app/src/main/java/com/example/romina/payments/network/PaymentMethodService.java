@@ -45,7 +45,7 @@ public class PaymentMethodService {
 
             @Override
             public void failure(RetrofitError error) {
-
+                paymentMethodsCallback.failure(error);
             }
         });
     }
