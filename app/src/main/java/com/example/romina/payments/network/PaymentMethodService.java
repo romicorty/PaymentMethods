@@ -35,7 +35,7 @@ public class PaymentMethodService {
                 List<PaymentMethod> selectedList = new ArrayList<>();
                 if (paymentMethods != null) {
                     for (PaymentMethod paymentMethod : paymentMethods) {
-                        if ("credit_card".equalsIgnoreCase(paymentMethod.getPayment_type_id())){
+                        if ("credit_card".equalsIgnoreCase(paymentMethod.getPaymentTypeId())){
                             selectedList.add(paymentMethod);
                         }
                     }

@@ -6,22 +6,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import com.example.romina.payments.R;
+
 import com.example.romina.payments.model.PaymentMethod;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class PaymentMethodAdapter extends ArrayAdapter<PaymentMethod> {
 
-    private List<PaymentMethod> mPaymentMethods;
+    private ArrayList<PaymentMethod> mPaymentMethods;
     private int mResourceId;
 
-    public PaymentMethodAdapter(Context context, int resource, List<PaymentMethod> paymentMethods) {
+    public PaymentMethodAdapter(Context context, int resource,List<PaymentMethod> paymentMethods) {
         super(context, resource, paymentMethods);
-        mPaymentMethods = paymentMethods;
+        mPaymentMethods = new ArrayList<>(paymentMethods);
         mResourceId = resource;
     }
 
-    public static class PaymentMethodViewHolder {
+    static class PaymentMethodViewHolder {
         TextView txName;
     }
 
@@ -45,7 +47,7 @@ public class PaymentMethodAdapter extends ArrayAdapter<PaymentMethod> {
         return convertView;
     }
 
-    public List<PaymentMethod> getmPaymentMethods() {
+    public ArrayList<PaymentMethod> getPaymentMethods() {
         return mPaymentMethods;
     }
 }

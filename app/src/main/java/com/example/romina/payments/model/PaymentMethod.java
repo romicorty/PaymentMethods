@@ -1,35 +1,50 @@
 package com.example.romina.payments.model;
 
 
-import java.io.Serializable;
+import android.os.Parcel;
+import android.os.Parcelable;
+import com.google.gson.annotations.SerializedName;
 
-public class PaymentMethod implements Serializable{
-
-    private String id;
+public class PaymentMethod implements Parcelable{
+    @SerializedName("name")
     private String name;
-    private String payment_type_id;
 
-    public String getId() {
-        return id;
+    @SerializedName("payment_type_id")
+    private String paymentTypeId;
+
+    protected PaymentMethod(Parcel in) {
+        name = in.readString();
+        paymentTypeId = in.readString();
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+    public static final Creator<PaymentMethod> CREATOR = new Creator<PaymentMethod>() {
+        @Override
+        public PaymentMethod createFromParcel(Parcel in) {
+            return new PaymentMethod(in);
+        }
+
+        @Override
+        public PaymentMethod[] newArray(int size) {
+            return new PaymentMethod[size];
+        }
+    };
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getPaymentTypeId() {
+        return paymentTypeId;
     }
 
-    public String getPayment_type_id() {
-        return payment_type_id;
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
-    public void setPayment_type_id(String payment_type_id) {
-        this.payment_type_id = payment_type_id;
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(paymentTypeId);
     }
 }

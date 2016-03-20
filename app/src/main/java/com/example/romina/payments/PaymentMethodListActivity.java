@@ -1,24 +1,20 @@
 package com.example.romina.payments;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.ListView;
-import com.example.romina.payments.PaymentMethodAdapter;
-import com.example.romina.payments.R;
+
 import com.example.romina.payments.model.PaymentMethod;
 import com.example.romina.payments.network.PaymentMethodService;
-import java.io.Serializable;
-import java.util.ArrayList;
+
 import java.util.List;
+
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 public class PaymentMethodListActivity extends AppCompatActivity {
+    private static final String PAYMENT_METHODS = "paymentMethods";
     private PaymentMethodAdapter mAdapter;
     private ListView mListView;
 
@@ -28,7 +24,7 @@ public class PaymentMethodListActivity extends AppCompatActivity {
         setContentView(R.layout.payment_method_list);
         mListView = (ListView)findViewById(R.id.listView);
         if (savedInstanceState != null) {
-            List<PaymentMethod> paymentMethods = (List<PaymentMethod>)savedInstanceState.getSerializable("paymentMethods");
+            List<PaymentMethod> paymentMethods = savedInstanceState.getParcelableArrayList(PAYMENT_METHODS);
             if (paymentMethods != null) {
                 updateListView(paymentMethods);
             } else {
@@ -58,7 +54,7 @@ public class PaymentMethodListActivity extends AppCompatActivity {
         });
     }
 
-    public void updateListView(List<PaymentMethod> paymentMethods) {
+    private void updateListView(List<PaymentMethod> paymentMethods) {
         mAdapter = new PaymentMethodAdapter(PaymentMethodListActivity.this,R.layout.payment_method_item,paymentMethods);
         mListView.setAdapter(mAdapter);
     }
@@ -66,6 +62,6 @@ public class PaymentMethodListActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putSerializable("paymentMethods", (Serializable) mAdapter.getmPaymentMethods());
+        outState.putParcelableArrayList(PAYMENT_METHODS, mAdapter.getPaymentMethods());
     }
 }
