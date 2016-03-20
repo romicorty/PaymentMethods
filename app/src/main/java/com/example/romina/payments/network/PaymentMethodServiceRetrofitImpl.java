@@ -4,8 +4,10 @@ import android.support.annotation.NonNull;
 
 import com.example.romina.payments.BuildConfig;
 import com.example.romina.payments.model.PaymentMethod;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -24,7 +26,7 @@ public class PaymentMethodServiceRetrofitImpl implements PaymentMethodService{
     private PaymentMethodServiceApi api;
 
     @Override
-    public void getPaymentMethods(String baseUrl, String uri, String publicKey,final Callback<List<PaymentMethod>> paymentMethodsCallback) {
+    public void getPaymentMethods(String baseUrl, String uri, String publicKey,final ServiceCallback<List<PaymentMethod>> paymentMethodsCallback) {
         RestAdapter.Builder builder = new RestAdapter.Builder();
 
         if (BuildConfig.DEBUG) {
@@ -36,12 +38,12 @@ public class PaymentMethodServiceRetrofitImpl implements PaymentMethodService{
             @Override
             public void success(List<PaymentMethod> paymentMethods, Response response) {
                 List<PaymentMethod> filteredPaymentMethods = filterPaymentMethods(paymentMethods, "credit_card");
-                paymentMethodsCallback.success(filteredPaymentMethods,response);
+                paymentMethodsCallback.success(filteredPaymentMethods);
             }
 
             @Override
             public void failure(RetrofitError error) {
-                paymentMethodsCallback.failure(error);
+                paymentMethodsCallback.failure(error.getMessage());
             }
         });
     }

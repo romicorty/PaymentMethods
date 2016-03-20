@@ -8,12 +8,9 @@ import android.widget.ListView;
 import com.example.romina.payments.model.PaymentMethod;
 import com.example.romina.payments.network.PaymentMethodService;
 import com.example.romina.payments.network.PaymentMethodServiceRetrofitImpl;
+import com.example.romina.payments.network.ServiceCallback;
 
 import java.util.List;
-
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 public class PaymentMethodListActivity extends AppCompatActivity {
     private static final String PAYMENT_METHODS = "paymentMethods";
@@ -54,14 +51,14 @@ public class PaymentMethodListActivity extends AppCompatActivity {
         String publicKey = "444a9ef5-8a6b-429f-abdf-587639155d88";
         PaymentMethodService service = new PaymentMethodServiceRetrofitImpl();
 
-        service.getPaymentMethods(baseUrl, uri, publicKey, new Callback<List<PaymentMethod>>() {
+        service.getPaymentMethods(baseUrl, uri, publicKey, new ServiceCallback<List<PaymentMethod>>() {
             @Override
-            public void success(List<PaymentMethod> paymentMethods, Response response) {
+            public void success(List<PaymentMethod> paymentMethods) {
                 updateListView(paymentMethods);
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(String error) {
                 mLoadingList.setVisibility(View.GONE);
                 mNetworkError.setVisibility(View.VISIBLE);
             }
