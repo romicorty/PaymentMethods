@@ -7,6 +7,7 @@ import android.widget.ListView;
 
 import com.example.romina.payments.model.PaymentMethod;
 import com.example.romina.payments.network.PaymentMethodService;
+import com.example.romina.payments.network.PaymentMethodServiceRetrofitImpl;
 
 import java.util.List;
 
@@ -51,7 +52,7 @@ public class PaymentMethodListActivity extends AppCompatActivity {
         String baseUrl = "https://api.mercadopago.com";
         String uri = "v1/payment_methods";
         String publicKey = "444a9ef5-8a6b-429f-abdf-587639155d88";
-        PaymentMethodService service = new PaymentMethodService();
+        PaymentMethodService service = new PaymentMethodServiceRetrofitImpl();
 
         service.getPaymentMethods(baseUrl, uri, publicKey, new Callback<List<PaymentMethod>>() {
             @Override
