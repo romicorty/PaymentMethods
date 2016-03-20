@@ -57,7 +57,6 @@ public class PaymentMethodListActivity extends AppCompatActivity {
         service.getPaymentMethods(baseUrl, uri, publicKey, new Callback<List<PaymentMethod>>() {
             @Override
             public void success(List<PaymentMethod> paymentMethods, Response response) {
-
                 updateListView(paymentMethods);
             }
 

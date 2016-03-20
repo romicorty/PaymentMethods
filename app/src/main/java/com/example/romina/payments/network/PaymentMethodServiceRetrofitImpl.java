@@ -1,5 +1,7 @@
 package com.example.romina.payments.network;
 
+import android.support.annotation.NonNull;
+
 import com.example.romina.payments.BuildConfig;
 import com.example.romina.payments.model.PaymentMethod;
 import java.util.ArrayList;
@@ -33,15 +35,8 @@ public class PaymentMethodServiceRetrofitImpl implements PaymentMethodService{
         api.getPaymentMethods(uri, publicKey, new Callback<List<PaymentMethod>>() {
             @Override
             public void success(List<PaymentMethod> paymentMethods, Response response) {
-                List<PaymentMethod> selectedList = new ArrayList<>();
-                if (paymentMethods != null) {
-                    for (PaymentMethod paymentMethod : paymentMethods) {
-                        if ("credit_card".equalsIgnoreCase(paymentMethod.getPaymentTypeId())){
-                            selectedList.add(paymentMethod);
-                        }
-                    }
-                }
-                paymentMethodsCallback.success(selectedList,response);
+                List<PaymentMethod> filteredPaymentMethods = filterPaymentMethods(paymentMethods, "credit_card");
+                paymentMethodsCallback.success(filteredPaymentMethods,response);
             }
 
             @Override
@@ -49,6 +44,19 @@ public class PaymentMethodServiceRetrofitImpl implements PaymentMethodService{
                 paymentMethodsCallback.failure(error);
             }
         });
+    }
+
+    @NonNull
+    private List<PaymentMethod> filterPaymentMethods(List<PaymentMethod> paymentMethods, String paymentTypeId) {
+        List<PaymentMethod> filteredList = new ArrayList<>();
+        if (paymentMethods != null) {
+            for (PaymentMethod paymentMethod : paymentMethods) {
+                if (paymentTypeId.equalsIgnoreCase(paymentMethod.getPaymentTypeId())){
+                    filteredList.add(paymentMethod);
+                }
+            }
+        }
+        return filteredList;
     }
 
 
