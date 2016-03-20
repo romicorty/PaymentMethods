@@ -45,4 +45,7 @@ public class PaymentMethodAdapter extends ArrayAdapter<PaymentMethod> {
         return convertView;
     }
 
+    public List<PaymentMethod> getmPaymentMethods() {
+        return mPaymentMethods;
+    }
 }

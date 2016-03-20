@@ -1,7 +1,9 @@
 package com.example.romina.payments.model;
 
 
-public class PaymentMethod {
+import java.io.Serializable;
+
+public class PaymentMethod implements Serializable{
 
     private String id;
     private String name;
