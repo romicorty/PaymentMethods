@@ -13,6 +13,11 @@
     />
 
     <include
+        layout="@layout/loading_list"
+        android:id="@+id/loadingList"
+        />
+
+    <include
         layout="@layout/network_error"
         android:id="@+id/networkError"
         />

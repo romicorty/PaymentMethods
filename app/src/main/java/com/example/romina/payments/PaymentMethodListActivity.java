@@ -20,6 +20,7 @@ public class PaymentMethodListActivity extends AppCompatActivity {
     private ListView mListView;
     private View mNetworkError;
     private View mEmptyList;
+    private View mLoadingList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,8 +29,11 @@ public class PaymentMethodListActivity extends AppCompatActivity {
         mListView = (ListView)findViewById(R.id.listView);
         mNetworkError = findViewById(R.id.networkError);
         mEmptyList = findViewById(R.id.emptyList);
+        mLoadingList = findViewById(R.id.loadingList);
+
         mNetworkError.setVisibility(View.GONE);
         mEmptyList.setVisibility(View.GONE);
+        mLoadingList.setVisibility(View.VISIBLE);
 
         if (savedInstanceState != null) {
             List<PaymentMethod> paymentMethods = savedInstanceState.getParcelableArrayList(PAYMENT_METHODS);
@@ -52,14 +56,13 @@ public class PaymentMethodListActivity extends AppCompatActivity {
         service.getPaymentMethods(baseUrl, uri, publicKey, new Callback<List<PaymentMethod>>() {
             @Override
             public void success(List<PaymentMethod> paymentMethods, Response response) {
-                if (paymentMethods.isEmpty()) {
-                    mEmptyList.setVisibility(View.VISIBLE);
-                }
+
                 updateListView(paymentMethods);
             }
 
             @Override
             public void failure(RetrofitError error) {
+                mLoadingList.setVisibility(View.GONE);
                 mNetworkError.setVisibility(View.VISIBLE);
             }
         });
@@ -68,11 +71,17 @@ public class PaymentMethodListActivity extends AppCompatActivity {
     private void updateListView(List<PaymentMethod> paymentMethods) {
         mAdapter = new PaymentMethodAdapter(PaymentMethodListActivity.this,R.layout.payment_method_item,paymentMethods);
         mListView.setAdapter(mAdapter);
+        mLoadingList.setVisibility(View.GONE);
+        if (paymentMethods.isEmpty()) {
+            mEmptyList.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList(PAYMENT_METHODS, mAdapter.getPaymentMethods());
+        if (mAdapter != null) {
+            outState.putParcelableArrayList(PAYMENT_METHODS, mAdapter.getPaymentMethods());
+        }
     }
 }
