@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Payments</string>
-    <string name="title_activity_payment_method">PaymentMethodActivity</string>
-
-    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_payment_method">Payment Methods</string>
     <string name="action_settings">Settings</string>
+    <string name="emptyListMessage">No payment methods available</string>
+    <string name="netWorkErrorMessage">Errors loading payment methods</string>
 </resources>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_activity_payment_method">Medios de Pago</string>
+    <string name="emptyListMessage">No hay métodos de pago disponibles</string>
+    <string name="netWorkErrorMessage">Hubo un error al cargar los medios de pago</string>
+</resources>
