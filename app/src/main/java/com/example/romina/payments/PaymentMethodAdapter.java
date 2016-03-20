@@ -1,4 +1,4 @@
-package com.example.romina.payments.network;
+package com.example.romina.payments;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -45,10 +45,4 @@ public class PaymentMethodAdapter extends ArrayAdapter<PaymentMethod> {
         return convertView;
     }
 
-
-    public void updatePaymentMethods(List<PaymentMethod> payments){
-        mPaymentMethods.clear();
-        mPaymentMethods.addAll(payments);
-        notifyDataSetChanged();
-    }
 }
