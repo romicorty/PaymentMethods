@@ -3,4 +3,5 @@
     <string name="title_activity_payment_method">Medios de Pago</string>
     <string name="emptyListMessage">No hay métodos de pago disponibles</string>
     <string name="netWorkErrorMessage">Hubo un error al cargar los medios de pago</string>
+    <string name="btn_retry">Reintentar</string>
 </resources>

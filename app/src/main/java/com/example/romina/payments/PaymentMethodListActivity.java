@@ -3,6 +3,7 @@ package com.example.romina.payments;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.example.romina.payments.model.PaymentMethod;
@@ -31,7 +32,13 @@ public class PaymentMethodListActivity extends AppCompatActivity {
 
         mNetworkError.setVisibility(View.GONE);
         mEmptyList.setVisibility(View.GONE);
-        mLoadingList.setVisibility(View.VISIBLE);
+
+        Button button = (Button) findViewById(R.id.btn_retry);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                loadPaymentMethods();
+            }
+        });
 
         if (savedInstanceState != null) {
             List<PaymentMethod> paymentMethods = savedInstanceState.getParcelableArrayList(PAYMENT_METHODS);
@@ -50,7 +57,8 @@ public class PaymentMethodListActivity extends AppCompatActivity {
         String uri = "v1/payment_methods";
         String publicKey = "444a9ef5-8a6b-429f-abdf-587639155d88";
         PaymentMethodService service = new PaymentMethodServiceRetrofitImpl();
-
+        mLoadingList.setVisibility(View.VISIBLE);
+        mNetworkError.setVisibility(View.GONE);
         service.getPaymentMethods(baseUrl, uri, publicKey, new ServiceCallback<List<PaymentMethod>>() {
             @Override
             public void success(List<PaymentMethod> paymentMethods) {
@@ -69,8 +77,12 @@ public class PaymentMethodListActivity extends AppCompatActivity {
         mAdapter = new PaymentMethodAdapter(PaymentMethodListActivity.this,R.layout.payment_method_item,paymentMethods);
         mListView.setAdapter(mAdapter);
         mLoadingList.setVisibility(View.GONE);
+        mNetworkError.setVisibility(View.GONE);
+
         if (paymentMethods.isEmpty()) {
             mEmptyList.setVisibility(View.VISIBLE);
+        }else {
+            mEmptyList.setVisibility(View.GONE);
         }
     }
 

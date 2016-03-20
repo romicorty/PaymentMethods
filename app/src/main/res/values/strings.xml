@@ -3,4 +3,5 @@
     <string name="title_activity_payment_method">Payment Methods</string>
     <string name="emptyListMessage">No payment methods available</string>
     <string name="netWorkErrorMessage">Errors loading payment methods</string>
+    <string name="btn_retry">Retry</string>
 </resources>
