@@ -4,4 +4,5 @@
     <string name="emptyListMessage">No hay métodos de pago disponibles</string>
     <string name="netWorkErrorMessage">Hubo un error al cargar los medios de pago</string>
     <string name="btn_retry">Reintentar</string>
+    <string name="btn_next">Siguiente</string>
 </resources>
