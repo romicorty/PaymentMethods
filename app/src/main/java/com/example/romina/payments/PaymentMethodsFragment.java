@@ -1,7 +1,7 @@
 package com.example.romina.payments;
 
 import android.app.Activity;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +18,7 @@ import com.example.romina.payments.network.ServiceCallback;
 import java.util.List;
 
 
-public class PaymentMethodsFragment extends Fragment implements AdapterView.OnItemClickListener{
+public class PaymentMethodsFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     private PaymentMethodsFragmentListener mListener;
     private ImageTextModelAdapter mAdapter;
@@ -27,6 +27,11 @@ public class PaymentMethodsFragment extends Fragment implements AdapterView.OnIt
     private View mNetworkError;
     private View mEmptyList;
     private View mLoadingList;
+
+
+    public static PaymentMethodsFragment newInstance() {
+        return new PaymentMethodsFragment();
+    }
 
     public PaymentMethodsFragment() {
         // Required empty public constructor
@@ -42,6 +47,7 @@ public class PaymentMethodsFragment extends Fragment implements AdapterView.OnIt
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_payment_methods, container, false);
         mListView = (ListView) view.findViewById(R.id.paymentMethods_listView);
+        mListView.setOnItemClickListener(this);
         mEmptyList = view.findViewById(R.id.paymentMethods_emptyList);
         mLoadingList = view.findViewById(R.id.paymentMethods_loadingList);
         mNetworkError = view.findViewById(R.id.paymentMethods_networkError);
@@ -89,7 +95,7 @@ public class PaymentMethodsFragment extends Fragment implements AdapterView.OnIt
     }
 
     public interface PaymentMethodsFragmentListener {
-        public void onSelectedPaymentMethod(PaymentMethod PaymentMethod);
+        public void onSelectedPaymentMethod(PaymentMethod paymentMethod);
     }
 
     public void loadPaymentMethods(){

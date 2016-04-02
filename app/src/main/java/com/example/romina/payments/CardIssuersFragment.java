@@ -1,8 +1,8 @@
 package com.example.romina.payments;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import com.example.romina.payments.model.CardIssuer;
-import com.example.romina.payments.model.PaymentMethod;
 import com.example.romina.payments.network.PaymentService;
 import com.example.romina.payments.network.PaymentServiceRetrofitImpl;
 import com.example.romina.payments.network.ServiceCallback;
@@ -56,6 +55,7 @@ public class CardIssuersFragment extends Fragment implements AdapterView.OnItemC
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_card_issuers, container, false);
         mListView = (ListView) view.findViewById(R.id.cardIssuers_listView);
+        mListView.setOnItemClickListener(this);
         mEmptyList = view.findViewById(R.id.cardIssuers_emptyList);
         mLoadingList = view.findViewById(R.id.cardIssuers_loadingList);
         mNetworkError = view.findViewById(R.id.cardIssuers_networkError);
@@ -69,6 +69,12 @@ public class CardIssuersFragment extends Fragment implements AdapterView.OnItemC
         });
 
         return view;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        loadPaymentMethods();
     }
 
     @Override
@@ -107,10 +113,10 @@ public class CardIssuersFragment extends Fragment implements AdapterView.OnItemC
         PaymentService service = new PaymentServiceRetrofitImpl();
         mLoadingList.setVisibility(View.VISIBLE);
         mNetworkError.setVisibility(View.GONE);
-        service.getPaymentMethods(baseUrl, uri, publicKey, new ServiceCallback<List<PaymentMethod>>() {
+        service.getCardIssuers(baseUrl, uri, publicKey, mPaymentMethod, new ServiceCallback<List<CardIssuer>>() {
             @Override
-            public void success(List<PaymentMethod> paymentMethods) {
-                updateListView(paymentMethods);
+            public void success(List<CardIssuer> cardIssuers) {
+                updateListView(cardIssuers);
             }
 
             @Override
@@ -121,14 +127,14 @@ public class CardIssuersFragment extends Fragment implements AdapterView.OnItemC
         });
     }
 
-    private void updateListView(List<PaymentMethod> paymentMethods) {
+    private void updateListView(List<CardIssuer> cardIssuers) {
 
-        mAdapter = new ImageTextModelAdapter(this.getActivity(),R.layout.image_text_model_item,paymentMethods);
+        mAdapter = new ImageTextModelAdapter(this.getActivity(),R.layout.image_text_model_item,cardIssuers);
         mListView.setAdapter(mAdapter);
         mLoadingList.setVisibility(View.GONE);
         mNetworkError.setVisibility(View.GONE);
 
-        if (paymentMethods.isEmpty()) {
+        if (cardIssuers.isEmpty()) {
             mEmptyList.setVisibility(View.VISIBLE);
         }else {
             mEmptyList.setVisibility(View.GONE);

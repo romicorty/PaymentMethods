@@ -1,7 +1,7 @@
 package com.example.romina.payments;
 
 import android.app.Activity;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +23,10 @@ public class AmountFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    public static AmountFragment newInstance() {
+        return new AmountFragment();
     }
 
     @Override
