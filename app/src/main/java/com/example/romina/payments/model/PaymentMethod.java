@@ -6,7 +6,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-public class PaymentMethod implements Parcelable{
+public class PaymentMethod implements Parcelable, ImageTextModel{
 
     @SerializedName("id")
     private String mId;
@@ -53,6 +53,11 @@ public class PaymentMethod implements Parcelable{
 
     public String getImageURL() {
         return mImageURL;
+    }
+
+    @Override
+    public String getText() {
+        return mName;
     }
 
     @Override

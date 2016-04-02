@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-public class CardIssuer implements Parcelable{
+public class CardIssuer implements Parcelable,ImageTextModel{
 
     @SerializedName("id")
     private String mId;
@@ -44,6 +44,11 @@ public class CardIssuer implements Parcelable{
 
     public String getImageURL() {
         return mImageURL;
+    }
+
+    @Override
+    public String getText() {
+        return mName;
     }
 
     @Override
