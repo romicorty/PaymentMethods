@@ -1,12 +1,11 @@
 package com.example.romina.payments.model;
 
-
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-public class PaymentMethod implements Parcelable{
+public class CardIssuer implements Parcelable{
 
     @SerializedName("id")
     private String mId;
@@ -14,41 +13,33 @@ public class PaymentMethod implements Parcelable{
     @SerializedName("name")
     private String mName;
 
-    @SerializedName("payment_type_id")
-    private String mPaymentTypeId;
-
     @SerializedName("secure_thumbnail")
     private String mImageURL;
 
-    protected PaymentMethod(Parcel in) {
+    protected CardIssuer(Parcel in) {
         mName = in.readString();
-        mPaymentTypeId = in.readString();
         mId = in.readString();
         mImageURL = in.readString();
     }
 
-    public static final Creator<PaymentMethod> CREATOR = new Creator<PaymentMethod>() {
+    public static final Creator<CardIssuer> CREATOR = new Creator<CardIssuer>() {
         @Override
-        public PaymentMethod createFromParcel(Parcel in) {
-            return new PaymentMethod(in);
+        public CardIssuer createFromParcel(Parcel in) {
+            return new CardIssuer(in);
         }
 
         @Override
-        public PaymentMethod[] newArray(int size) {
-            return new PaymentMethod[size];
+        public CardIssuer[] newArray(int size) {
+            return new CardIssuer[size];
         }
     };
 
-    public String getName() {
-        return mName;
-    }
-
-    public String getPaymentTypeId() {
-        return mPaymentTypeId;
-    }
-
     public String getId() {
         return mId;
+    }
+
+    public String getName() {
+        return mName;
     }
 
     public String getImageURL() {
@@ -64,7 +55,6 @@ public class PaymentMethod implements Parcelable{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(mId);
         dest.writeString(mName);
-        dest.writeString(mPaymentTypeId);
         dest.writeString(mImageURL);
     }
 }
