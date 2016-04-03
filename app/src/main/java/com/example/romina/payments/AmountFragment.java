@@ -1,8 +1,11 @@
 package com.example.romina.payments;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,13 +42,25 @@ public class AmountFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (mListener != null) {
-                    BigDecimal amount = new BigDecimal(txAmount.getText().toString());
-                    mListener.onInputAmount(amount);
+                    if (txAmount.getText().toString().isEmpty()) {
+                        showEmptyAmountAlert(getActivity());
+                    }else {
+                        BigDecimal amount = new BigDecimal(txAmount.getText().toString());
+                        mListener.onInputAmount(amount);
+                    }
                 }
             }
         });
 
         return view;
+    }
+
+    private void showEmptyAmountAlert(Context context) {
+        new AlertDialog.Builder(context)
+                .setTitle(context.getString(R.string.empty_amount_alert_message_title))
+                .setMessage(context.getString(R.string.empty_amount_alert_message))
+                .setPositiveButton(context.getString(R.string.btn_ok), null)
+                .show();
     }
     
     @Override

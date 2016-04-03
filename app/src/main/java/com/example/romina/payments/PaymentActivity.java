@@ -1,13 +1,11 @@
 package com.example.romina.payments;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.EditText;
 
 import com.example.romina.payments.model.CardIssuer;
 import com.example.romina.payments.model.PayerCost;
@@ -57,18 +55,20 @@ public class PaymentActivity extends AppCompatActivity implements AmountFragment
     public void selectedPayerCost(PayerCost payerCost) {
         mPayercost = payerCost;
         FragmentManager fm = getSupportFragmentManager();
-        addSeleccionAlert();
+        showConfirmationAlert();
         fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
-    public void addSeleccionAlert() {
-        String message = getString(R.string.alert_amount)+":"+mAmount.toString()+"\n";
+    public void showConfirmationAlert() {
+        String message = getString(R.string.alert_amount)+": $ "+mAmount.toString()+"\n";
         message+= getString(R.string.alert_payment_method)+": "+mPaymentMethod.getText()+"("+mCardIssuer.getText()+")"+"\n";
         message+= mPayercost.getText();
 
         new AlertDialog.Builder(this)
                 .setTitle(R.string.alert_title)
                 .setMessage(message)
+                .setPositiveButton(getString(R.string.btn_ok), null)
+                .setNegativeButton(getString(R.string.btn_cancel),null)
                 .show();
     }
 

@@ -12,4 +12,8 @@
     <string name="alert_payment_method">Payment method</string>
     <string name="alert_issuer">Issuer</string>
     <string name="alert_payer_cost">Payer cost</string>
+    <string name="empty_amount_alert_message">You must input an amount</string>
+    <string name="btn_ok">Ok</string>
+    <string name="empty_amount_alert_message_title">Error</string>
+    <string name="btn_cancel">Cancel</string>
 </resources>

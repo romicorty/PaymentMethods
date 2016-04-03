@@ -10,4 +10,8 @@
     <string name="alert_payment_method">Medio de pago</string>
     <string name="alert_issuer">Banco</string>
     <string name="alert_payer_cost">Cuotas</string>
+    <string name="empty_amount_alert_message">Debe ingresar un monto</string>
+    <string name="btn_ok">Aceptar</string>
+    <string name="empty_amount_alert_message_title">Error</string>
+    <string name="btn_cancel">Cancelar</string>
 </resources>
