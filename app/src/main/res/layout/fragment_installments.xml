@@ -1,0 +1,28 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:id="@+id/fragment_installments">
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/installments_listView"
+        />
+
+    <include
+        layout="@layout/loading_list"
+        android:id="@+id/installments_loadingList"
+        />
+
+    <include
+        layout="@layout/network_error"
+        android:id="@+id/installments_networkError"
+        />
+
+    <include
+        layout="@layout/empty_list"
+        android:id="@+id/installments_emptyList"
+        />
+
+</RelativeLayout>

@@ -2,14 +2,14 @@
     <string name="app_name">Payments</string>
     <string name="title_activity_payment_method">Payment Methods</string>
     <string name="emptyListMessage">No payment methods available</string>
-    <string name="netWorkErrorMessage">Errors loading payment methods</string>
+    <string name="netWorkErrorMessage">Errors loading list</string>
     <string name="btn_retry">Retry</string>
     <string name="title_activity_payment">PaymentActivity</string>
-
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-
-<!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="btn_next">Siguiente</string>
+    <string name="btn_next">Next</string>
+    <string name="alert_title">Payment Confirmation</string>
+    <string name="alert_amount">Amount</string>
+    <string name="alert_payment_method">Payment method</string>
+    <string name="alert_issuer">Issuer</string>
+    <string name="alert_payer_cost">Payer cost</string>
 </resources>

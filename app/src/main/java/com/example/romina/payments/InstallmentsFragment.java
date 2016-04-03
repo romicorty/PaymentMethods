@@ -10,18 +10,26 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
-import com.example.romina.payments.model.CardIssuer;
+import com.example.romina.payments.model.PayerCost;
 import com.example.romina.payments.network.PaymentService;
 import com.example.romina.payments.network.PaymentServiceRetrofitImpl;
 import com.example.romina.payments.network.ServiceCallback;
 
 import java.util.List;
 
-public class CardIssuersFragment extends Fragment implements AdapterView.OnItemClickListener{
-    private static final String ARG_PAYMENT_METHOD = "paymentMethod";
 
-    private CardIssuersFragmentListener mListener;
-    private String mPaymentMethod;
+public class InstallmentsFragment extends Fragment implements AdapterView.OnItemClickListener{
+
+    private static final String ARG_AMOUNT = "amount";
+    private static final String ARG_PAYMENT_METHOD_ID = "paymentMethod";
+    private static final String ARG_CARD_ISSUER_ID = "cardIssuer";
+
+    // TODO: Rename and change types of parameters
+    private String mAmount;
+    private String mPaymentMethodId;
+    private String mCardIssuerId;
+
+    private InstallmentsFragmentListener mListener;
     private ImageTextModelAdapter mAdapter;
     //TODO: Cargar con ButterKnif elementos de la vista
     private ListView mListView;
@@ -29,15 +37,17 @@ public class CardIssuersFragment extends Fragment implements AdapterView.OnItemC
     private View mEmptyList;
     private View mLoadingList;
 
-    public static CardIssuersFragment newInstance(String paymentMethod) {
-        CardIssuersFragment fragment = new CardIssuersFragment();
+    public static InstallmentsFragment newInstance(String amount, String paymentMethod, String cardIssuer) {
+        InstallmentsFragment fragment = new InstallmentsFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PAYMENT_METHOD, paymentMethod);
+        args.putString(ARG_AMOUNT, amount);
+        args.putString(ARG_PAYMENT_METHOD_ID, paymentMethod);
+        args.putString(ARG_CARD_ISSUER_ID,cardIssuer);
         fragment.setArguments(args);
         return fragment;
     }
 
-    public CardIssuersFragment() {
+    public InstallmentsFragment() {
         // Required empty public constructor
     }
 
@@ -45,7 +55,9 @@ public class CardIssuersFragment extends Fragment implements AdapterView.OnItemC
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mPaymentMethod = getArguments().getString(ARG_PAYMENT_METHOD);
+            mAmount = getArguments().getString(ARG_AMOUNT);
+            mPaymentMethodId = getArguments().getString(ARG_PAYMENT_METHOD_ID);
+            mCardIssuerId = getArguments().getString(ARG_CARD_ISSUER_ID);
         }
     }
 
@@ -53,18 +65,18 @@ public class CardIssuersFragment extends Fragment implements AdapterView.OnItemC
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_card_issuers, container, false);
-        mListView = (ListView) view.findViewById(R.id.cardIssuers_listView);
+        View view = inflater.inflate(R.layout.fragment_installments, container, false);
+        mListView = (ListView) view.findViewById(R.id.installments_listView);
         mListView.setOnItemClickListener(this);
-        mEmptyList = view.findViewById(R.id.cardIssuers_emptyList);
-        mLoadingList = view.findViewById(R.id.cardIssuers_loadingList);
-        mNetworkError = view.findViewById(R.id.cardIssuers_networkError);
+        mEmptyList = view.findViewById(R.id.installments_emptyList);
+        mLoadingList = view.findViewById(R.id.installments_loadingList);
+        mNetworkError = view.findViewById(R.id.installments_networkError);
         mNetworkError.setVisibility(View.GONE);
         mEmptyList.setVisibility(View.GONE);
         Button button = (Button) view.findViewById(R.id.btn_retry);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                loadCardIssuers();
+                loadInstallments();
             }
         });
 
@@ -74,17 +86,17 @@ public class CardIssuersFragment extends Fragment implements AdapterView.OnItemC
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        loadCardIssuers();
+        loadInstallments();
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (CardIssuersFragmentListener) activity;
+            mListener = (InstallmentsFragmentListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement CardIssuersFragmentListener");
+                    + " must implement InstallmentsFragmentListener");
         }
     }
 
@@ -96,27 +108,27 @@ public class CardIssuersFragment extends Fragment implements AdapterView.OnItemC
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        CardIssuer cardIssuer = (CardIssuer) mAdapter.getItem(position);
+        PayerCost payerCost = (PayerCost) mAdapter.getItem(position);
         if (mListener != null) {
-            mListener.onSelectedCardIssuer(cardIssuer);
+            mListener.selectedPayerCost(payerCost);
         }
     }
 
-    public interface CardIssuersFragmentListener {
-        public void onSelectedCardIssuer(CardIssuer cardIssuer);
+    public interface InstallmentsFragmentListener {
+        public void selectedPayerCost(PayerCost payerCost);
     }
 
-    public void loadCardIssuers(){
+    public void loadInstallments(){
         String baseUrl = "https://api.mercadopago.com";
-        String uri = "v1/payment_methods/card_issuers";
+        String uri = "v1/payment_methods/installments";
         String publicKey = "444a9ef5-8a6b-429f-abdf-587639155d88";
         PaymentService service = new PaymentServiceRetrofitImpl();
         mLoadingList.setVisibility(View.VISIBLE);
         mNetworkError.setVisibility(View.GONE);
-        service.getCardIssuers(baseUrl, uri, publicKey, mPaymentMethod, new ServiceCallback<List<CardIssuer>>() {
+        service.getPayerCosts(baseUrl, uri, publicKey, mAmount, mPaymentMethodId, mCardIssuerId, new ServiceCallback<List<PayerCost>>() {
             @Override
-            public void success(List<CardIssuer> cardIssuers) {
-                updateListView(cardIssuers);
+            public void success(List<PayerCost> installments) {
+                updateListView(installments);
             }
 
             @Override
@@ -127,17 +139,18 @@ public class CardIssuersFragment extends Fragment implements AdapterView.OnItemC
         });
     }
 
-    private void updateListView(List<CardIssuer> cardIssuers) {
+    private void updateListView(List<PayerCost> payerCosts) {
 
-        mAdapter = new ImageTextModelAdapter(this.getActivity(),R.layout.image_text_model_item,cardIssuers);
+        mAdapter = new ImageTextModelAdapter(this.getActivity(),R.layout.image_text_model_item,payerCosts);
         mListView.setAdapter(mAdapter);
         mLoadingList.setVisibility(View.GONE);
         mNetworkError.setVisibility(View.GONE);
 
-        if (cardIssuers.isEmpty()) {
+        if (payerCosts.isEmpty()) {
             mEmptyList.setVisibility(View.VISIBLE);
         }else {
             mEmptyList.setVisibility(View.GONE);
         }
     }
+
 }

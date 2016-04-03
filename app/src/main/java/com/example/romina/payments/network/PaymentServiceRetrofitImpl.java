@@ -4,6 +4,8 @@ import android.support.annotation.NonNull;
 
 import com.example.romina.payments.BuildConfig;
 import com.example.romina.payments.model.CardIssuer;
+import com.example.romina.payments.model.Installment;
+import com.example.romina.payments.model.PayerCost;
 import com.example.romina.payments.model.PaymentMethod;
 
 import java.util.ArrayList;
@@ -25,6 +27,9 @@ public class PaymentServiceRetrofitImpl implements PaymentService {
 
         @GET("/{uri}")
         void getCardIssuers(@Path("uri") String uri,@Query("public_key")String publicKey,@Query("payment_method_id")String paymentMethodId,Callback<List<CardIssuer>> cardIssuers);
+
+        @GET("/{uri}")
+        void getInstallments(@Path("uri") String uri,@Query("public_key")String publicKey,@Query("amount")String amount,@Query("payment_method_id")String paymentMethodId,@Query("issuer.id")String issuer,Callback<List<Installment>> installments);
     }
 
     private PaymentServiceApi api;
@@ -61,11 +66,10 @@ public class PaymentServiceRetrofitImpl implements PaymentService {
         }
         RestAdapter restAdapter = builder.setEndpoint(baseUrl).build();
         this.api = restAdapter.create(PaymentServiceApi.class);
-        api.getCardIssuers(uri, publicKey, paymentMethod,new Callback<List<CardIssuer>>() {
+        api.getCardIssuers(uri, publicKey, paymentMethod, new Callback<List<CardIssuer>>() {
             @Override
             public void success(List<CardIssuer> cardIssuers, Response response) {
-                List<CardIssuer> filteredPaymentMethods = cardIssuers;
-                cardIssuersCallback.success(filteredPaymentMethods);
+                cardIssuersCallback.success(cardIssuers);
             }
 
             @Override
@@ -74,6 +78,30 @@ public class PaymentServiceRetrofitImpl implements PaymentService {
             }
         });
     }
+
+    @Override
+    public void getPayerCosts(String baseUrl, String uri, String publicKey, String amount, String paymentMethod, String issuer, final ServiceCallback<List<PayerCost>> payerCostsCallback) {
+        RestAdapter.Builder builder = new RestAdapter.Builder();
+
+        if (BuildConfig.DEBUG) {
+            builder.setLogLevel(RestAdapter.LogLevel.FULL);
+        }
+        RestAdapter restAdapter = builder.setEndpoint(baseUrl).build();
+        this.api = restAdapter.create(PaymentServiceApi.class);
+        api.getInstallments(uri, publicKey, amount, paymentMethod, issuer, new Callback<List<Installment>>() {
+            @Override
+            public void success(List<Installment> installments, Response response) {
+                List<PayerCost> payerCosts = installments.get(0).getPayerCosts();
+                payerCostsCallback.success(payerCosts);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                payerCostsCallback.failure(error.getMessage());
+            }
+        });
+    }
+
 
     @NonNull
     private List<PaymentMethod> filterPaymentMethods(List<PaymentMethod> paymentMethods, String paymentTypeId) {

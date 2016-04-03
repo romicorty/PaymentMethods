@@ -2,7 +2,12 @@
 <resources>
     <string name="title_activity_payment_method">Medios de Pago</string>
     <string name="emptyListMessage">No hay métodos de pago disponibles</string>
-    <string name="netWorkErrorMessage">Hubo un error al cargar los medios de pago</string>
+    <string name="netWorkErrorMessage">Hubo un error al cargar el listado</string>
     <string name="btn_retry">Reintentar</string>
     <string name="btn_next">Siguiente</string>
+    <string name="alert_title">Confirmación de pago</string>
+    <string name="alert_amount">Monto</string>
+    <string name="alert_payment_method">Medio de pago</string>
+    <string name="alert_issuer">Banco</string>
+    <string name="alert_payer_cost">Cuotas</string>
 </resources>

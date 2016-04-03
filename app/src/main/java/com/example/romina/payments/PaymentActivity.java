@@ -1,42 +1,40 @@
 package com.example.romina.payments;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
+import android.widget.EditText;
 
 import com.example.romina.payments.model.CardIssuer;
+import com.example.romina.payments.model.PayerCost;
 import com.example.romina.payments.model.PaymentMethod;
 
 import java.math.BigDecimal;
 
-public class PaymentActivity extends AppCompatActivity implements AmountFragment.AmountFragmentListener,PaymentMethodsFragment.PaymentMethodsFragmentListener,CardIssuersFragment.CardIssuersFragmentListener {
+public class PaymentActivity extends AppCompatActivity implements AmountFragment.AmountFragmentListener,PaymentMethodsFragment.PaymentMethodsFragmentListener,CardIssuersFragment.CardIssuersFragmentListener, InstallmentsFragment.InstallmentsFragmentListener{
 
     private BigDecimal mAmount;
     private PaymentMethod mPaymentMethod;
     private CardIssuer mCardIssuer;
+    private PayerCost mPayercost;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.payment);
         AmountFragment amountFragment =  AmountFragment.newInstance();
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        ft.replace(R.id.frameLayout, amountFragment);
-        ft.commit();
+        pushFragment(amountFragment,false);
     }
 
     @Override
     public void onInputAmount(BigDecimal amount) {
         mAmount = amount;
         PaymentMethodsFragment paymentMethodsFragment =  PaymentMethodsFragment.newInstance();
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        ft.replace(R.id.frameLayout, paymentMethodsFragment);
-        ft.addToBackStack(null);
-        ft.commit();
+       pushFragment(paymentMethodsFragment,true);
 
     }
 
@@ -44,15 +42,43 @@ public class PaymentActivity extends AppCompatActivity implements AmountFragment
     public void onSelectedPaymentMethod(PaymentMethod paymentMethod) {
         mPaymentMethod = paymentMethod;
         CardIssuersFragment cardIssuersFragment =  CardIssuersFragment.newInstance(mPaymentMethod.getId());
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        ft.replace(R.id.frameLayout, cardIssuersFragment);
-        ft.addToBackStack(null);
-        ft.commit();
+        pushFragment(cardIssuersFragment,true);
+
     }
 
     @Override
     public void onSelectedCardIssuer(CardIssuer cardIssuer) {
         mCardIssuer = cardIssuer;
+        InstallmentsFragment installmentsFragment = InstallmentsFragment.newInstance(mAmount.toString(),mPaymentMethod.getId(),mCardIssuer.getId());
+        pushFragment(installmentsFragment,true);
+    }
+
+    @Override
+    public void selectedPayerCost(PayerCost payerCost) {
+        mPayercost = payerCost;
+        FragmentManager fm = getSupportFragmentManager();
+        addSeleccionAlert();
+        fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+    }
+
+    public void addSeleccionAlert() {
+        String message = getString(R.string.alert_amount)+":"+mAmount.toString()+"\n";
+        message+= getString(R.string.alert_payment_method)+": "+mPaymentMethod.getText()+"("+mCardIssuer.getText()+")"+"\n";
+        message+= mPayercost.getText();
+
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.alert_title)
+                .setMessage(message)
+                .show();
+    }
+
+    private void pushFragment(Fragment fragment, boolean backStack) {
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.replace(R.id.frameLayout, fragment);
+        if (backStack) {
+            ft.addToBackStack(null);
+        }
+        ft.commit();
     }
 }
