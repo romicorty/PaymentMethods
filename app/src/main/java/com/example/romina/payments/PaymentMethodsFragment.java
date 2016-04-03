@@ -1,20 +1,22 @@
 package com.example.romina.payments;
 
 import android.app.Activity;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.romina.payments.model.PaymentMethod;
 import com.example.romina.payments.network.PaymentService;
 import com.example.romina.payments.network.PaymentServiceRetrofitImpl;
 import com.example.romina.payments.network.ServiceCallback;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -23,8 +25,10 @@ import butterknife.ButterKnife;
 
 public class PaymentMethodsFragment extends Fragment implements AdapterView.OnItemClickListener {
 
+    private static final String PAYMENT_METHODS  = "paymentMethods";
     private PaymentMethodsFragmentListener mListener;
     private ImageTextModelAdapter mAdapter;
+    private ArrayList<PaymentMethod> mPaymentMethods;
     @Bind(R.id.paymentMethods_listView)
     ListView mListView;
     @Bind(R.id.paymentMethods_networkError)
@@ -70,7 +74,16 @@ public class PaymentMethodsFragment extends Fragment implements AdapterView.OnIt
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        loadPaymentMethods();
+        if (savedInstanceState == null) {
+            loadPaymentMethods();
+        }else {
+            mPaymentMethods = savedInstanceState.getParcelableArrayList(PAYMENT_METHODS);
+            if (mPaymentMethods != null)  {
+                updateListView(mPaymentMethods);
+            }else {
+                loadPaymentMethods();
+            }
+        }
     }
 
     @Override
@@ -104,6 +117,15 @@ public class PaymentMethodsFragment extends Fragment implements AdapterView.OnIt
         }
     }
 
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mPaymentMethods != null) {
+            outState.putParcelableArrayList(PAYMENT_METHODS, mPaymentMethods);
+        }
+    }
+
     public interface PaymentMethodsFragmentListener {
         public void onSelectedPaymentMethod(PaymentMethod paymentMethod);
     }
@@ -118,7 +140,8 @@ public class PaymentMethodsFragment extends Fragment implements AdapterView.OnIt
         service.getPaymentMethods(baseUrl, uri, publicKey, new ServiceCallback<List<PaymentMethod>>() {
             @Override
             public void success(List<PaymentMethod> paymentMethods) {
-                updateListView(paymentMethods);
+                mPaymentMethods = new ArrayList<PaymentMethod>(paymentMethods);
+                updateListView(mPaymentMethods);
             }
 
             @Override
@@ -137,6 +160,8 @@ public class PaymentMethodsFragment extends Fragment implements AdapterView.OnIt
         mNetworkError.setVisibility(View.GONE);
 
         if (paymentMethods.isEmpty()) {
+            TextView tex = (TextView) getActivity().findViewById(R.id.empty_list_tex);
+            tex.setText(R.string.empty_payment_methods);
             mEmptyList.setVisibility(View.VISIBLE);
         }else {
             mEmptyList.setVisibility(View.GONE);

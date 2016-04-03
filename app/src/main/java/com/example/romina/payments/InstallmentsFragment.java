@@ -9,12 +9,14 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.romina.payments.model.PayerCost;
 import com.example.romina.payments.network.PaymentService;
 import com.example.romina.payments.network.PaymentServiceRetrofitImpl;
 import com.example.romina.payments.network.ServiceCallback;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -26,6 +28,7 @@ public class InstallmentsFragment extends Fragment implements AdapterView.OnItem
     private static final String ARG_AMOUNT = "amount";
     private static final String ARG_PAYMENT_METHOD_ID = "paymentMethod";
     private static final String ARG_CARD_ISSUER_ID = "cardIssuer";
+    private static final String PAYER_COSTS = "payerCosts";
 
     private String mAmount;
     private String mPaymentMethodId;
@@ -33,7 +36,7 @@ public class InstallmentsFragment extends Fragment implements AdapterView.OnItem
 
     private InstallmentsFragmentListener mListener;
     private ImageTextModelAdapter mAdapter;
-
+    private ArrayList<PayerCost> mPayerCosts;
     @Bind(R.id.installments_listView)
     ListView mListView;
     @Bind(R.id.installments_networkError)
@@ -90,7 +93,16 @@ public class InstallmentsFragment extends Fragment implements AdapterView.OnItem
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        loadInstallments();
+        if (savedInstanceState == null) {
+            loadInstallments();
+        }else {
+            mPayerCosts = savedInstanceState.getParcelableArrayList(PAYER_COSTS);
+            if (mPayerCosts != null)  {
+                updateListView(mPayerCosts);
+            }else {
+                loadInstallments();
+            }
+        }
     }
 
     @Override
@@ -117,6 +129,14 @@ public class InstallmentsFragment extends Fragment implements AdapterView.OnItem
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mPayerCosts != null) {
+            outState.putParcelableArrayList(PAYER_COSTS, mPayerCosts);
+        }
+    }
+
+    @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         PayerCost payerCost = (PayerCost) mAdapter.getItem(position);
         if (mListener != null) {
@@ -139,6 +159,7 @@ public class InstallmentsFragment extends Fragment implements AdapterView.OnItem
             @Override
             public void success(List<PayerCost> installments) {
                 updateListView(installments);
+
             }
 
             @Override
@@ -157,6 +178,8 @@ public class InstallmentsFragment extends Fragment implements AdapterView.OnItem
         mNetworkError.setVisibility(View.GONE);
 
         if (payerCosts.isEmpty()) {
+            TextView tex = (TextView) getActivity().findViewById(R.id.empty_list_tex);
+            tex.setText(R.string.empty_installments);
             mEmptyList.setVisibility(View.VISIBLE);
         }else {
             mEmptyList.setVisibility(View.GONE);

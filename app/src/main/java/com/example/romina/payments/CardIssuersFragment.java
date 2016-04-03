@@ -9,12 +9,14 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.romina.payments.model.CardIssuer;
 import com.example.romina.payments.network.PaymentService;
 import com.example.romina.payments.network.PaymentServiceRetrofitImpl;
 import com.example.romina.payments.network.ServiceCallback;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -22,7 +24,8 @@ import butterknife.ButterKnife;
 
 public class CardIssuersFragment extends Fragment implements AdapterView.OnItemClickListener{
     private static final String ARG_PAYMENT_METHOD = "paymentMethod";
-
+    private static final String CARD_ISSUERS = "cardIssuers";
+    private ArrayList<CardIssuer> mCardIssuers;
     private CardIssuersFragmentListener mListener;
     private String mPaymentMethod;
     private ImageTextModelAdapter mAdapter;
@@ -79,7 +82,16 @@ public class CardIssuersFragment extends Fragment implements AdapterView.OnItemC
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        loadCardIssuers();
+        if (savedInstanceState == null) {
+            loadCardIssuers();
+        }else {
+            mCardIssuers = savedInstanceState.getParcelableArrayList(CARD_ISSUERS);
+            if (mCardIssuers != null)  {
+                updateListView(mCardIssuers);
+            }else {
+                loadCardIssuers();
+            }
+        }
     }
 
     @Override
@@ -106,6 +118,15 @@ public class CardIssuersFragment extends Fragment implements AdapterView.OnItemC
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mCardIssuers != null) {
+            outState.putParcelableArrayList(CARD_ISSUERS, mCardIssuers);
+        }
+
+    }
+
+    @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         CardIssuer cardIssuer = (CardIssuer) mAdapter.getItem(position);
         if (mListener != null) {
@@ -127,6 +148,7 @@ public class CardIssuersFragment extends Fragment implements AdapterView.OnItemC
         service.getCardIssuers(baseUrl, uri, publicKey, mPaymentMethod, new ServiceCallback<List<CardIssuer>>() {
             @Override
             public void success(List<CardIssuer> cardIssuers) {
+                mCardIssuers = new ArrayList<CardIssuer>(cardIssuers);
                 updateListView(cardIssuers);
             }
 
@@ -146,6 +168,8 @@ public class CardIssuersFragment extends Fragment implements AdapterView.OnItemC
         mNetworkError.setVisibility(View.GONE);
 
         if (cardIssuers.isEmpty()) {
+            TextView tex = (TextView) getActivity().findViewById(R.id.empty_list_tex);
+            tex.setText(R.string.empty_card_issuers);
             mEmptyList.setVisibility(View.VISIBLE);
         }else {
             mEmptyList.setVisibility(View.GONE);

@@ -99,7 +99,7 @@ public class PaymentActivity extends AppCompatActivity implements AmountFragment
         outState.putParcelable("cardIssuer", mCardIssuer);
         outState.putParcelable("payerCost", mPayercost);
         if (mAmount != null) {
-            outState.putString("amount",mAmount.toString());    
+            outState.putString("amount",mAmount.toString());
         }
     }
 }

@@ -18,4 +18,7 @@
     <string name="card_issuer_title">Seleccione un banco</string>
     <string name="installment_title">Seleccione cuotas</string>
     <string name="payment_method_title">Seleccione tarjeta</string>
+    <string name="empty_card_issuers">No hay bancos disponibles</string>
+    <string name="empty_installments">No hay cuotas disponibles</string>
+    <string name="empty_payment_methods">No hay tarjetas disponibles</string>
 </resources>
