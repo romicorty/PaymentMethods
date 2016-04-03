@@ -39,10 +39,6 @@ public class PaymentMethod implements Parcelable, ImageTextModel{
         }
     };
 
-    public String getName() {
-        return mName;
-    }
-
     public String getPaymentTypeId() {
         return mPaymentTypeId;
     }
