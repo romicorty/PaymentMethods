@@ -16,4 +16,8 @@
     <string name="btn_ok">Ok</string>
     <string name="empty_amount_alert_message_title">Error</string>
     <string name="btn_cancel">Cancel</string>
+    <string name="amount_title">Input an amount</string>
+    <string name="card_issuer_title">Select an issuer</string>
+    <string name="installment_title">Select installments</string>
+    <string name="payment_method_title">Select a payment method</string>
 </resources>

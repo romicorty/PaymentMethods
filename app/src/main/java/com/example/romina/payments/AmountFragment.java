@@ -52,6 +52,8 @@ public class AmountFragment extends Fragment {
             }
         });
 
+        getActivity().setTitle(getActivity().getString(R.string.amount_title));
+
         return view;
     }
 

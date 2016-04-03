@@ -17,6 +17,9 @@ import com.example.romina.payments.network.ServiceCallback;
 
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 
 public class InstallmentsFragment extends Fragment implements AdapterView.OnItemClickListener{
 
@@ -24,18 +27,21 @@ public class InstallmentsFragment extends Fragment implements AdapterView.OnItem
     private static final String ARG_PAYMENT_METHOD_ID = "paymentMethod";
     private static final String ARG_CARD_ISSUER_ID = "cardIssuer";
 
-    // TODO: Rename and change types of parameters
     private String mAmount;
     private String mPaymentMethodId;
     private String mCardIssuerId;
 
     private InstallmentsFragmentListener mListener;
     private ImageTextModelAdapter mAdapter;
-    //TODO: Cargar con ButterKnif elementos de la vista
-    private ListView mListView;
-    private View mNetworkError;
-    private View mEmptyList;
-    private View mLoadingList;
+
+    @Bind(R.id.installments_listView)
+    ListView mListView;
+    @Bind(R.id.installments_networkError)
+    View mNetworkError;
+    @Bind(R.id.installments_emptyList)
+    View mEmptyList;
+    @Bind(R.id.installments_loadingList)
+    View mLoadingList;
 
     public static InstallmentsFragment newInstance(String amount, String paymentMethod, String cardIssuer) {
         InstallmentsFragment fragment = new InstallmentsFragment();
@@ -64,13 +70,9 @@ public class InstallmentsFragment extends Fragment implements AdapterView.OnItem
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_installments, container, false);
-        mListView = (ListView) view.findViewById(R.id.installments_listView);
+        ButterKnife.bind(this, view);
         mListView.setOnItemClickListener(this);
-        mEmptyList = view.findViewById(R.id.installments_emptyList);
-        mLoadingList = view.findViewById(R.id.installments_loadingList);
-        mNetworkError = view.findViewById(R.id.installments_networkError);
         mNetworkError.setVisibility(View.GONE);
         mEmptyList.setVisibility(View.GONE);
         Button button = (Button) view.findViewById(R.id.btn_retry);
@@ -79,6 +81,8 @@ public class InstallmentsFragment extends Fragment implements AdapterView.OnItem
                 loadInstallments();
             }
         });
+
+        getActivity().setTitle(getActivity().getString(R.string.installment_title));
 
         return view;
     }
@@ -104,6 +108,12 @@ public class InstallmentsFragment extends Fragment implements AdapterView.OnItem
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
     }
 
     @Override

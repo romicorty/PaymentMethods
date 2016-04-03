@@ -13,6 +13,9 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 public class ImageTextModelAdapter <T extends  ImageTextModel> extends ArrayAdapter<T> {
 
     private int mResourceId;
@@ -25,7 +28,9 @@ public class ImageTextModelAdapter <T extends  ImageTextModel> extends ArrayAdap
     }
 
     static class ImageTextModelViewHolder {
+        @Bind(R.id.imageTextModelItem_txName)
         TextView txName;
+        @Bind(R.id.imageTextModelItem_image)
         ImageView img;
     }
 
@@ -37,8 +42,7 @@ public class ImageTextModelAdapter <T extends  ImageTextModel> extends ArrayAdap
             viewHolder = new ImageTextModelViewHolder();
             LayoutInflater li = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = li.inflate(mResourceId,parent,false);
-            viewHolder.txName = (TextView)convertView.findViewById(R.id.imageTextModelItem_txName);
-            viewHolder.img = (ImageView) convertView.findViewById(R.id.imageTextModelItem_image);
+            ButterKnife.bind(viewHolder, convertView);
             convertView.setTag(viewHolder);
         }else{
             viewHolder = (ImageTextModelViewHolder)convertView.getTag();

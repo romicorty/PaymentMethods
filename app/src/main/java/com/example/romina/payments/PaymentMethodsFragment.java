@@ -17,16 +17,22 @@ import com.example.romina.payments.network.ServiceCallback;
 
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 
 public class PaymentMethodsFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     private PaymentMethodsFragmentListener mListener;
     private ImageTextModelAdapter mAdapter;
-    //TODO: Cargar con ButterKnif elementos de la vista
-    private ListView mListView;
-    private View mNetworkError;
-    private View mEmptyList;
-    private View mLoadingList;
+    @Bind(R.id.paymentMethods_listView)
+    ListView mListView;
+    @Bind(R.id.paymentMethods_networkError)
+    View mNetworkError;
+    @Bind(R.id.paymentMethods_emptyList)
+    View mEmptyList;
+    @Bind(R.id.paymentMethods_loadingList)
+    View mLoadingList;
 
 
     public static PaymentMethodsFragment newInstance() {
@@ -46,11 +52,8 @@ public class PaymentMethodsFragment extends Fragment implements AdapterView.OnIt
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_payment_methods, container, false);
-        mListView = (ListView) view.findViewById(R.id.paymentMethods_listView);
+        ButterKnife.bind(this,view);
         mListView.setOnItemClickListener(this);
-        mEmptyList = view.findViewById(R.id.paymentMethods_emptyList);
-        mLoadingList = view.findViewById(R.id.paymentMethods_loadingList);
-        mNetworkError = view.findViewById(R.id.paymentMethods_networkError);
         mNetworkError.setVisibility(View.GONE);
         mEmptyList.setVisibility(View.GONE);
         Button button = (Button) view.findViewById(R.id.btn_retry);
@@ -60,6 +63,7 @@ public class PaymentMethodsFragment extends Fragment implements AdapterView.OnIt
             }
         });
 
+        getActivity().setTitle(getActivity().getString(R.string.payment_method_title));
         return view;
     }
 
@@ -84,6 +88,12 @@ public class PaymentMethodsFragment extends Fragment implements AdapterView.OnIt
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
     }
 
     @Override

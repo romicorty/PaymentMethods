@@ -14,4 +14,8 @@
     <string name="btn_ok">Aceptar</string>
     <string name="empty_amount_alert_message_title">Error</string>
     <string name="btn_cancel">Cancelar</string>
+    <string name="amount_title">Ingrese un monto</string>
+    <string name="card_issuer_title">Seleccione un banco</string>
+    <string name="installment_title">Seleccione cuotas</string>
+    <string name="payment_method_title">Seleccione tarjeta</string>
 </resources>

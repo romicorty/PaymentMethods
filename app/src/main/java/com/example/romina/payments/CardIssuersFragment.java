@@ -17,17 +17,23 @@ import com.example.romina.payments.network.ServiceCallback;
 
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 public class CardIssuersFragment extends Fragment implements AdapterView.OnItemClickListener{
     private static final String ARG_PAYMENT_METHOD = "paymentMethod";
 
     private CardIssuersFragmentListener mListener;
     private String mPaymentMethod;
     private ImageTextModelAdapter mAdapter;
-    //TODO: Cargar con ButterKnif elementos de la vista
-    private ListView mListView;
-    private View mNetworkError;
-    private View mEmptyList;
-    private View mLoadingList;
+    @Bind(R.id.cardIssuers_listView)
+    ListView mListView;
+    @Bind(R.id.cardIssuers_networkError)
+    View mNetworkError;
+    @Bind(R.id.cardIssuers_emptyList)
+    View mEmptyList;
+    @Bind(R.id.cardIssuers_loadingList)
+    View mLoadingList;
 
     public static CardIssuersFragment newInstance(String paymentMethod) {
         CardIssuersFragment fragment = new CardIssuersFragment();
@@ -54,11 +60,8 @@ public class CardIssuersFragment extends Fragment implements AdapterView.OnItemC
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_card_issuers, container, false);
-        mListView = (ListView) view.findViewById(R.id.cardIssuers_listView);
+        ButterKnife.bind(this,view);
         mListView.setOnItemClickListener(this);
-        mEmptyList = view.findViewById(R.id.cardIssuers_emptyList);
-        mLoadingList = view.findViewById(R.id.cardIssuers_loadingList);
-        mNetworkError = view.findViewById(R.id.cardIssuers_networkError);
         mNetworkError.setVisibility(View.GONE);
         mEmptyList.setVisibility(View.GONE);
         Button button = (Button) view.findViewById(R.id.btn_retry);
@@ -67,6 +70,8 @@ public class CardIssuersFragment extends Fragment implements AdapterView.OnItemC
                 loadCardIssuers();
             }
         });
+
+        getActivity().setTitle(getActivity().getString(R.string.card_issuer_title));
 
         return view;
     }
@@ -92,6 +97,12 @@ public class CardIssuersFragment extends Fragment implements AdapterView.OnItemC
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
     }
 
     @Override

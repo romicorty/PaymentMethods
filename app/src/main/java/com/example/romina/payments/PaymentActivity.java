@@ -24,8 +24,18 @@ public class PaymentActivity extends AppCompatActivity implements AmountFragment
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.payment);
-        AmountFragment amountFragment =  AmountFragment.newInstance();
-        pushFragment(amountFragment,false);
+        if (savedInstanceState == null) {
+            AmountFragment amountFragment =  AmountFragment.newInstance();
+            pushFragment(amountFragment,false);
+        }else{
+            mPaymentMethod = savedInstanceState.getParcelable("paymentMethod");
+            mCardIssuer = savedInstanceState.getParcelable("cardIssuer");
+            mPayercost = savedInstanceState.getParcelable("payerCost");
+            String amount = savedInstanceState.getString("amount");
+            if (amount != null) {
+                mAmount = new BigDecimal(amount);
+            }
+        }
     }
 
     @Override
@@ -61,7 +71,7 @@ public class PaymentActivity extends AppCompatActivity implements AmountFragment
 
     public void showConfirmationAlert() {
         String message = getString(R.string.alert_amount)+": $ "+mAmount.toString()+"\n";
-        message+= getString(R.string.alert_payment_method)+": "+mPaymentMethod.getText()+"("+mCardIssuer.getText()+")"+"\n";
+        message+= getString(R.string.alert_payment_method)+": "+mPaymentMethod.getText()+" ("+mCardIssuer.getText()+")"+"\n";
         message+= mPayercost.getText();
 
         new AlertDialog.Builder(this)
@@ -80,5 +90,16 @@ public class PaymentActivity extends AppCompatActivity implements AmountFragment
             ft.addToBackStack(null);
         }
         ft.commit();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable("paymentMethod", mPaymentMethod);
+        outState.putParcelable("cardIssuer", mCardIssuer);
+        outState.putParcelable("payerCost", mPayercost);
+        if (mAmount != null) {
+            outState.putString("amount",mAmount.toString());    
+        }
     }
 }
