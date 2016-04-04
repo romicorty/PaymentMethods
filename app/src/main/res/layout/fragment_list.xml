@@ -2,27 +2,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    android:id="@+id/fragment_installments">
+    android:id="@+id/fragment_list">
 
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/installments_listView"
+        android:id="@+id/fragment_list_listView"
         />
 
     <include
         layout="@layout/loading_list"
-        android:id="@+id/installments_loadingList"
+        android:id="@+id/fragment_list_loadingList"
         />
 
     <include
         layout="@layout/network_error"
-        android:id="@+id/installments_networkError"
+        android:id="@+id/fragment_list_networkError"
         />
 
     <include
         layout="@layout/empty_list"
-        android:id="@+id/installments_emptyList"
+        android:id="@+id/fragment_list_emptyList"
         />
 
 </RelativeLayout>

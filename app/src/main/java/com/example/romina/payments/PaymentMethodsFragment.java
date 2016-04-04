@@ -6,8 +6,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -21,22 +19,26 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.OnItemClick;
 
 
-public class PaymentMethodsFragment extends Fragment implements AdapterView.OnItemClickListener {
+public class PaymentMethodsFragment extends Fragment{
 
     private static final String PAYMENT_METHODS  = "paymentMethods";
     private PaymentMethodsFragmentListener mListener;
     private ImageTextModelAdapter mAdapter;
     private ArrayList<PaymentMethod> mPaymentMethods;
-    @Bind(R.id.paymentMethods_listView)
+    @Bind(R.id.fragment_list_listView)
     ListView mListView;
-    @Bind(R.id.paymentMethods_networkError)
+    @Bind(R.id.fragment_list_networkError)
     View mNetworkError;
-    @Bind(R.id.paymentMethods_emptyList)
+    @Bind(R.id.fragment_list_emptyList)
     View mEmptyList;
-    @Bind(R.id.paymentMethods_loadingList)
+    @Bind(R.id.fragment_list_loadingList)
     View mLoadingList;
+    @Bind(R.id.empty_list_tex)
+    TextView mEmptyListTex;
 
 
     public static PaymentMethodsFragment newInstance() {
@@ -55,20 +57,17 @@ public class PaymentMethodsFragment extends Fragment implements AdapterView.OnIt
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_payment_methods, container, false);
-        ButterKnife.bind(this,view);
-        mListView.setOnItemClickListener(this);
+        View view = inflater.inflate(R.layout.fragment_list, container, false);
+        ButterKnife.bind(this, view);
         mNetworkError.setVisibility(View.GONE);
         mEmptyList.setVisibility(View.GONE);
-        Button button = (Button) view.findViewById(R.id.btn_retry);
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                loadPaymentMethods();
-            }
-        });
-
         getActivity().setTitle(getActivity().getString(R.string.payment_method_title));
         return view;
+    }
+
+    @OnClick(R.id.btn_retry)
+    void retry() {
+        loadPaymentMethods();
     }
 
     @Override
@@ -109,8 +108,8 @@ public class PaymentMethodsFragment extends Fragment implements AdapterView.OnIt
         ButterKnife.unbind(this);
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    @OnItemClick(R.id.fragment_list_listView)
+    void onItemClick(int position) {
         PaymentMethod paymentMethod = (PaymentMethod)mAdapter.getItem(position);
         if (mListener != null) {
             mListener.onSelectedPaymentMethod(paymentMethod);
@@ -160,8 +159,7 @@ public class PaymentMethodsFragment extends Fragment implements AdapterView.OnIt
         mNetworkError.setVisibility(View.GONE);
 
         if (paymentMethods.isEmpty()) {
-            TextView tex = (TextView) getActivity().findViewById(R.id.empty_list_tex);
-            tex.setText(R.string.empty_payment_methods);
+            mEmptyListTex.setText(R.string.empty_payment_methods);
             mEmptyList.setVisibility(View.VISIBLE);
         }else {
             mEmptyList.setVisibility(View.GONE);

@@ -6,8 +6,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -21,22 +19,27 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.OnItemClick;
 
-public class CardIssuersFragment extends Fragment implements AdapterView.OnItemClickListener{
+public class CardIssuersFragment extends Fragment{
     private static final String ARG_PAYMENT_METHOD = "paymentMethod";
     private static final String CARD_ISSUERS = "cardIssuers";
     private ArrayList<CardIssuer> mCardIssuers;
     private CardIssuersFragmentListener mListener;
     private String mPaymentMethod;
     private ImageTextModelAdapter mAdapter;
-    @Bind(R.id.cardIssuers_listView)
+    @Bind(R.id.fragment_list_listView)
     ListView mListView;
-    @Bind(R.id.cardIssuers_networkError)
+    @Bind(R.id.fragment_list_networkError)
     View mNetworkError;
-    @Bind(R.id.cardIssuers_emptyList)
+    @Bind(R.id.fragment_list_emptyList)
     View mEmptyList;
-    @Bind(R.id.cardIssuers_loadingList)
+    @Bind(R.id.fragment_list_loadingList)
     View mLoadingList;
+    @Bind(R.id.empty_list_tex)
+    TextView mEmptyListTex;
+
 
     public static CardIssuersFragment newInstance(String paymentMethod) {
         CardIssuersFragment fragment = new CardIssuersFragment();
@@ -62,21 +65,18 @@ public class CardIssuersFragment extends Fragment implements AdapterView.OnItemC
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_card_issuers, container, false);
-        ButterKnife.bind(this,view);
-        mListView.setOnItemClickListener(this);
+        View view = inflater.inflate(R.layout.fragment_list, container, false);
+        ButterKnife.bind(this, view);
         mNetworkError.setVisibility(View.GONE);
         mEmptyList.setVisibility(View.GONE);
-        Button button = (Button) view.findViewById(R.id.btn_retry);
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                loadCardIssuers();
-            }
-        });
-
         getActivity().setTitle(getActivity().getString(R.string.card_issuer_title));
 
         return view;
+    }
+
+    @OnClick(R.id.btn_retry)
+    void retry() {
+        loadCardIssuers();
     }
 
     @Override
@@ -126,8 +126,8 @@ public class CardIssuersFragment extends Fragment implements AdapterView.OnItemC
 
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    @OnItemClick(R.id.fragment_list_listView)
+    public void onItemClick(int position) {
         CardIssuer cardIssuer = (CardIssuer) mAdapter.getItem(position);
         if (mListener != null) {
             mListener.onSelectedCardIssuer(cardIssuer);
@@ -135,7 +135,7 @@ public class CardIssuersFragment extends Fragment implements AdapterView.OnItemC
     }
 
     public interface CardIssuersFragmentListener {
-        public void onSelectedCardIssuer(CardIssuer cardIssuer);
+        void onSelectedCardIssuer(CardIssuer cardIssuer);
     }
 
     public void loadCardIssuers(){
@@ -168,8 +168,7 @@ public class CardIssuersFragment extends Fragment implements AdapterView.OnItemC
         mNetworkError.setVisibility(View.GONE);
 
         if (cardIssuers.isEmpty()) {
-            TextView tex = (TextView) getActivity().findViewById(R.id.empty_list_tex);
-            tex.setText(R.string.empty_card_issuers);
+            mEmptyListTex.setText(R.string.empty_card_issuers);
             mEmptyList.setVisibility(View.VISIBLE);
         }else {
             mEmptyList.setVisibility(View.GONE);

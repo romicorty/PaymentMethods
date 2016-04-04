@@ -6,8 +6,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -21,9 +19,11 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.OnItemClick;
 
 
-public class InstallmentsFragment extends Fragment implements AdapterView.OnItemClickListener{
+public class InstallmentsFragment extends Fragment{
 
     private static final String ARG_AMOUNT = "amount";
     private static final String ARG_PAYMENT_METHOD_ID = "paymentMethod";
@@ -37,14 +37,16 @@ public class InstallmentsFragment extends Fragment implements AdapterView.OnItem
     private InstallmentsFragmentListener mListener;
     private ImageTextModelAdapter mAdapter;
     private ArrayList<PayerCost> mPayerCosts;
-    @Bind(R.id.installments_listView)
+    @Bind(R.id.fragment_list_listView)
     ListView mListView;
-    @Bind(R.id.installments_networkError)
+    @Bind(R.id.fragment_list_networkError)
     View mNetworkError;
-    @Bind(R.id.installments_emptyList)
+    @Bind(R.id.fragment_list_emptyList)
     View mEmptyList;
-    @Bind(R.id.installments_loadingList)
+    @Bind(R.id.fragment_list_loadingList)
     View mLoadingList;
+    @Bind(R.id.empty_list_tex)
+    TextView mEmptyListTex;
 
     public static InstallmentsFragment newInstance(String amount, String paymentMethod, String cardIssuer) {
         InstallmentsFragment fragment = new InstallmentsFragment();
@@ -73,22 +75,20 @@ public class InstallmentsFragment extends Fragment implements AdapterView.OnItem
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_installments, container, false);
+        View view = inflater.inflate(R.layout.fragment_list, container, false);
         ButterKnife.bind(this, view);
-        mListView.setOnItemClickListener(this);
         mNetworkError.setVisibility(View.GONE);
         mEmptyList.setVisibility(View.GONE);
-        Button button = (Button) view.findViewById(R.id.btn_retry);
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                loadInstallments();
-            }
-        });
-
         getActivity().setTitle(getActivity().getString(R.string.installment_title));
 
         return view;
     }
+
+    @OnClick(R.id.btn_retry)
+    void retry() {
+        loadInstallments();
+    }
+
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -136,8 +136,8 @@ public class InstallmentsFragment extends Fragment implements AdapterView.OnItem
         }
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    @OnItemClick(R.id.fragment_list_listView)
+    public void onItemClick(int position) {
         PayerCost payerCost = (PayerCost) mAdapter.getItem(position);
         if (mListener != null) {
             mListener.selectedPayerCost(payerCost);
@@ -178,8 +178,7 @@ public class InstallmentsFragment extends Fragment implements AdapterView.OnItem
         mNetworkError.setVisibility(View.GONE);
 
         if (payerCosts.isEmpty()) {
-            TextView tex = (TextView) getActivity().findViewById(R.id.empty_list_tex);
-            tex.setText(R.string.empty_installments);
+            mEmptyListTex.setText(R.string.empty_installments);
             mEmptyList.setVisibility(View.VISIBLE);
         }else {
             mEmptyList.setVisibility(View.GONE);

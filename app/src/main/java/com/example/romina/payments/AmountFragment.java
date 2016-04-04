@@ -2,22 +2,27 @@ package com.example.romina.payments;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 
 import java.math.BigDecimal;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 
 public class AmountFragment extends Fragment {
 
     private AmountFragmentListener mListener;
+    @Bind(R.id.tx_amount)
+    EditText mTxAmount;
+
 
     public AmountFragment() {
         // Required empty public constructor
@@ -36,25 +41,22 @@ public class AmountFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_amount, container, false);
-        Button btn = (Button) view.findViewById(R.id.btn_next);
-        final EditText txAmount = (EditText)view.findViewById(R.id.tx_amount);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mListener != null) {
-                    if (txAmount.getText().toString().isEmpty()) {
-                        showEmptyAmountAlert(getActivity());
-                    }else {
-                        BigDecimal amount = new BigDecimal(txAmount.getText().toString());
-                        mListener.onInputAmount(amount);
-                    }
-                }
-            }
-        });
-
+        ButterKnife.bind(this,view);
         getActivity().setTitle(getActivity().getString(R.string.amount_title));
 
         return view;
+    }
+
+    @OnClick(R.id.btn_next)
+    void onNextButtonClick() {
+        if (mListener != null) {
+            if (mTxAmount.getText().toString().isEmpty()) {
+                showEmptyAmountAlert(getActivity());
+            }else {
+                BigDecimal amount = new BigDecimal(mTxAmount.getText().toString());
+                mListener.onInputAmount(amount);
+            }
+        }
     }
 
     private void showEmptyAmountAlert(Context context) {
@@ -82,8 +84,14 @@ public class AmountFragment extends Fragment {
         mListener = null;
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
+    }
+
     public interface AmountFragmentListener {
-        public void onInputAmount(BigDecimal amount);
+        void onInputAmount(BigDecimal amount);
     }
 
 }
