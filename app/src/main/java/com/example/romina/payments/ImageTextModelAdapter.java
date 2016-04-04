@@ -1,6 +1,7 @@
 package com.example.romina.payments;
 
 import android.content.Context;
+import android.support.annotation.LayoutRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +22,7 @@ public class ImageTextModelAdapter <T extends  ImageTextModel> extends ArrayAdap
     private int mResourceId;
     private Context mContext;
 
-    public ImageTextModelAdapter(Context context, int resource, List<T> imageTextModels) {
+    public ImageTextModelAdapter(Context context, @LayoutRes int resource, List<T> imageTextModels) {
         super(context, resource, imageTextModels);
         mResourceId = resource;
         mContext = context;
@@ -53,7 +54,9 @@ public class ImageTextModelAdapter <T extends  ImageTextModel> extends ArrayAdap
 
         if (imageTextModel.getImageURL() != null){
             viewHolder.img.setVisibility(View.VISIBLE);
-            Picasso.with(mContext).setLoggingEnabled(true);
+            if(BuildConfig.DEBUG == true) {
+                Picasso.with(mContext).setLoggingEnabled(true);
+            }
             Picasso.with(mContext)
                     .load(imageTextModel.getImageURL())
                     .into(viewHolder.img);

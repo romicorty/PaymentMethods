@@ -36,8 +36,7 @@ public class PaymentServiceRetrofitImpl implements PaymentService {
 
     private PaymentServiceApi api;
 
-    @Override
-    public void getPaymentMethods(String baseUrl, String uri, String publicKey,final ServiceCallback<List<PaymentMethod>> paymentMethodsCallback) {
+    private void createRestAdapter(String baseUrl) {
         RestAdapter.Builder builder = new RestAdapter.Builder();
 
         if (BuildConfig.DEBUG) {
@@ -45,6 +44,11 @@ public class PaymentServiceRetrofitImpl implements PaymentService {
         }
         RestAdapter restAdapter = builder.setEndpoint(baseUrl).build();
         this.api = restAdapter.create(PaymentServiceApi.class);
+    }
+
+    @Override
+    public void getPaymentMethods(String baseUrl, String uri, String publicKey,final ServiceCallback<List<PaymentMethod>> paymentMethodsCallback) {
+        createRestAdapter(baseUrl);
         api.getPaymentMethods(uri, publicKey, new Callback<List<PaymentMethod>>() {
             @Override
             public void success(List<PaymentMethod> paymentMethods, Response response) {
@@ -56,7 +60,7 @@ public class PaymentServiceRetrofitImpl implements PaymentService {
 
             @Override
             public void failure(RetrofitError error) {
-                if (paymentMethodsCallback != null) {
+                if (paymentMethodsCallback != null ) {
                     paymentMethodsCallback.failure(error.getMessage());
                 }
             }
@@ -65,13 +69,7 @@ public class PaymentServiceRetrofitImpl implements PaymentService {
 
     @Override
     public void getCardIssuers(String baseUrl, String uri, String publicKey,String paymentMethod, final ServiceCallback<List<CardIssuer>> cardIssuersCallback) {
-        RestAdapter.Builder builder = new RestAdapter.Builder();
-
-        if (BuildConfig.DEBUG) {
-            builder.setLogLevel(RestAdapter.LogLevel.FULL);
-        }
-        RestAdapter restAdapter = builder.setEndpoint(baseUrl).build();
-        this.api = restAdapter.create(PaymentServiceApi.class);
+        createRestAdapter(baseUrl);
         api.getCardIssuers(uri, publicKey, paymentMethod, new Callback<List<CardIssuer>>() {
             @Override
             public void success(List<CardIssuer> cardIssuers, Response response) {
@@ -91,13 +89,7 @@ public class PaymentServiceRetrofitImpl implements PaymentService {
 
     @Override
     public void getPayerCosts(String baseUrl, String uri, String publicKey, String amount, String paymentMethod, String issuer, final ServiceCallback<List<PayerCost>> payerCostsCallback) {
-        RestAdapter.Builder builder = new RestAdapter.Builder();
-
-        if (BuildConfig.DEBUG) {
-            builder.setLogLevel(RestAdapter.LogLevel.FULL);
-        }
-        RestAdapter restAdapter = builder.setEndpoint(baseUrl).build();
-        this.api = restAdapter.create(PaymentServiceApi.class);
+        createRestAdapter(baseUrl);
         api.getInstallments(uri, publicKey, amount, paymentMethod, issuer, new Callback<List<Installment>>() {
             @Override
             public void success(List<Installment> installments, Response response) {
