@@ -15,6 +15,10 @@ import java.math.BigDecimal;
 
 public class PaymentActivity extends AppCompatActivity implements AmountFragment.AmountFragmentListener,PaymentMethodsFragment.PaymentMethodsFragmentListener,CardIssuersFragment.CardIssuersFragmentListener, InstallmentsFragment.InstallmentsFragmentListener{
 
+    private static final String PAYMENT_METHOD = "paymentMethod";
+    private static final String CARD_ISSUER = "cardIssuer";
+    private static final String PAYER_COST = "payerCost";
+    private static final String AMOUNT = "amount";
     private BigDecimal mAmount;
     private PaymentMethod mPaymentMethod;
     private CardIssuer mCardIssuer;
@@ -28,10 +32,10 @@ public class PaymentActivity extends AppCompatActivity implements AmountFragment
             AmountFragment amountFragment =  AmountFragment.newInstance();
             pushFragment(amountFragment,false);
         }else{
-            mPaymentMethod = savedInstanceState.getParcelable("paymentMethod");
-            mCardIssuer = savedInstanceState.getParcelable("cardIssuer");
-            mPayercost = savedInstanceState.getParcelable("payerCost");
-            String amount = savedInstanceState.getString("amount");
+            mPaymentMethod = savedInstanceState.getParcelable(PAYMENT_METHOD);
+            mCardIssuer = savedInstanceState.getParcelable(CARD_ISSUER);
+            mPayercost = savedInstanceState.getParcelable(PAYER_COST);
+            String amount = savedInstanceState.getString(AMOUNT);
             if (amount != null) {
                 mAmount = new BigDecimal(amount);
             }
@@ -95,11 +99,11 @@ public class PaymentActivity extends AppCompatActivity implements AmountFragment
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable("paymentMethod", mPaymentMethod);
-        outState.putParcelable("cardIssuer", mCardIssuer);
-        outState.putParcelable("payerCost", mPayercost);
+        outState.putParcelable(PAYMENT_METHOD, mPaymentMethod);
+        outState.putParcelable(CARD_ISSUER, mCardIssuer);
+        outState.putParcelable(PAYER_COST, mPayercost);
         if (mAmount != null) {
-            outState.putString("amount",mAmount.toString());
+            outState.putString(AMOUNT,mAmount.toString());
         }
     }
 }

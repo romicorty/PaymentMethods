@@ -8,6 +8,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import java.math.BigDecimal;
@@ -55,6 +56,8 @@ public class AmountFragment extends Fragment {
             }else {
                 BigDecimal amount = new BigDecimal(mTxAmount.getText().toString());
                 mListener.onInputAmount(amount);
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(mTxAmount.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
             }
         }
     }
@@ -68,12 +71,12 @@ public class AmountFragment extends Fragment {
     }
     
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
         try {
-            mListener = (AmountFragmentListener) activity;
+            mListener = (AmountFragmentListener) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
+            throw new ClassCastException(context.toString()
                     + " must implement AmountFragmentListener");
         }
     }

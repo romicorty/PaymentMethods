@@ -21,6 +21,8 @@ import retrofit.http.Query;
 
 public class PaymentServiceRetrofitImpl implements PaymentService {
 
+    private static final String TYPE_CREDIT_CARD = "credit_card";
+
     public interface PaymentServiceApi {
         @GET("/{uri}")
         void getPaymentMethods(@Path("uri") String uri,@Query("public_key")String publicKey,Callback<List<PaymentMethod>> paymentMethods);
@@ -46,13 +48,17 @@ public class PaymentServiceRetrofitImpl implements PaymentService {
         api.getPaymentMethods(uri, publicKey, new Callback<List<PaymentMethod>>() {
             @Override
             public void success(List<PaymentMethod> paymentMethods, Response response) {
-                List<PaymentMethod> filteredPaymentMethods = filterPaymentMethods(paymentMethods, "credit_card");
-                paymentMethodsCallback.success(filteredPaymentMethods);
+                List<PaymentMethod> filteredPaymentMethods = filterPaymentMethods(paymentMethods, TYPE_CREDIT_CARD);
+                if (paymentMethodsCallback != null) {
+                    paymentMethodsCallback.success(filteredPaymentMethods);
+                }
             }
 
             @Override
             public void failure(RetrofitError error) {
-                paymentMethodsCallback.failure(error.getMessage());
+                if (paymentMethodsCallback != null) {
+                    paymentMethodsCallback.failure(error.getMessage());
+                }
             }
         });
     }
@@ -69,12 +75,16 @@ public class PaymentServiceRetrofitImpl implements PaymentService {
         api.getCardIssuers(uri, publicKey, paymentMethod, new Callback<List<CardIssuer>>() {
             @Override
             public void success(List<CardIssuer> cardIssuers, Response response) {
-                cardIssuersCallback.success(cardIssuers);
+                if (cardIssuersCallback != null) {
+                    cardIssuersCallback.success(cardIssuers);
+                }
             }
 
             @Override
             public void failure(RetrofitError error) {
-                cardIssuersCallback.failure(error.getMessage());
+                if (cardIssuersCallback != null) {
+                    cardIssuersCallback.failure(error.getMessage());
+                }
             }
         });
     }
@@ -92,12 +102,16 @@ public class PaymentServiceRetrofitImpl implements PaymentService {
             @Override
             public void success(List<Installment> installments, Response response) {
                 List<PayerCost> payerCosts = installments.get(0).getPayerCosts();
-                payerCostsCallback.success(payerCosts);
+                if (payerCostsCallback != null) {
+                    payerCostsCallback.success(payerCosts);
+                }
             }
 
             @Override
             public void failure(RetrofitError error) {
-                payerCostsCallback.failure(error.getMessage());
+                if (payerCostsCallback != null) {
+                    payerCostsCallback.failure(error.getMessage());
+                }
             }
         });
     }

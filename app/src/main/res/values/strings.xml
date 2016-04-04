@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Payments</string>
-    <string name="title_activity_payment_method">Payment Methods</string>
     <string name="emptyListMessage">Empty list</string>
     <string name="netWorkErrorMessage">Errors loading list</string>
     <string name="btn_retry">Retry</string>
@@ -20,7 +19,7 @@
     <string name="card_issuer_title">Select an issuer</string>
     <string name="installment_title">Select installments</string>
     <string name="payment_method_title">Select a payment method</string>
-    <string name="empty_card_issuers">There are no card issuers availables </string>
-    <string name="empty_installments">There are no installments availables</string>
-    <string name="empty_payment_methods">There are no payment methods availables</string>
+    <string name="empty_card_issuers">There are no card issuers available</string>
+    <string name="empty_installments">There are no installments available</string>
+    <string name="empty_payment_methods">There are no payment methods available</string>
 </resources>
