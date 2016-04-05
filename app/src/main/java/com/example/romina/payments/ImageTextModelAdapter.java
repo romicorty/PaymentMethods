@@ -54,7 +54,7 @@ public class ImageTextModelAdapter <T extends  ImageTextModel> extends ArrayAdap
 
         if (imageTextModel.getImageURL() != null){
             viewHolder.img.setVisibility(View.VISIBLE);
-            if(BuildConfig.DEBUG == true) {
+            if(BuildConfig.DEBUG) {
                 Picasso.with(mContext).setLoggingEnabled(true);
             }
             Picasso.with(mContext)
